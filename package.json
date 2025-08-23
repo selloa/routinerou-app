@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "MVP of Routinerou - A timer that turns intentions into action",
   "main": "index.js",
-  "homepage": "https://selloa.github.io/routinery-app",
+  "homepage": "https://selloa.github.io/routinerou-app",
   "scripts": {
     "dev": "vite",
     "dev:web": "vite",
