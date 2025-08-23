@@ -1,4 +1,4 @@
-# Routinery MVP
+# Routinerou MVP
 
 A timer that turns intentions into action - inspired by the [Routinery app](https://www.routinery.app/).
 
