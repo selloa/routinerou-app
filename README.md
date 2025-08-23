@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Routinery - Multi-Platform Timer App
+=======
+# Routinerou MVP
+>>>>>>> 7a3afb97a3c41447d50a8aeee2362a55518e45d1
 
 A timer application that turns intentions into action, designed to work across multiple platforms with a clean, maintainable architecture.
 

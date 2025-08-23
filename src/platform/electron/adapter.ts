@@ -3,7 +3,7 @@ import { PlatformAdapter, PlatformConfig } from '../interface';
 // This will be implemented when Electron is added
 export class ElectronPlatformAdapter implements PlatformAdapter {
   private config: PlatformConfig;
-  private _electron: any; // Will be properly typed when Electron is added
+  // private _electron: any; // Will be properly typed when Electron is added
 
   constructor(config: PlatformConfig) {
     this.config = config;
