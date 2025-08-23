@@ -145,7 +145,7 @@ function App() {
   return (
     <div className="container">
       <div className="header">
-        <h1>Routinery</h1>
+        <h1>Routinerou</h1>
         <p>Turn intentions into action</p>
       </div>
       

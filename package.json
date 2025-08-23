@@ -1,7 +1,7 @@
 {
-  "name": "routinery-mvp",
+  "name": "routinerou-mvp",
   "version": "1.0.0",
-  "description": "MVP of Routinery - A timer that turns intentions into action",
+  "description": "MVP of Routinerou - A timer that turns intentions into action",
   "main": "index.js",
   "scripts": {
     "dev": "vite",
