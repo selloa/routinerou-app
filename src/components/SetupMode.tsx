@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Task, Preset } from '../types';
-import { formatDuration } from '../utils/timer';
+import { Task, Preset } from '../core/types';
+import { formatDuration } from '../core/timer';
 import { Plus, Play, Clock, Trash2 } from 'lucide-react';
 
 interface SetupModeProps {

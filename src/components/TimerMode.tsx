@@ -1,6 +1,6 @@
 import React from 'react';
-import { Task, TimerState } from '../types';
-import { formatTime, calculateProgress } from '../utils/timer';
+import { Task, TimerState } from '../core/types';
+import { formatTime, calculateProgress } from '../core/timer';
 import { Pause, Play, RotateCcw } from 'lucide-react';
 
 interface TimerModeProps {

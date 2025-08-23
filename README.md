@@ -1,142 +1,220 @@
-# Routinery MVP
+<<<<<<< HEAD
+# Routinery - Multi-Platform Timer App
+=======
+# Routinerou MVP
+>>>>>>> 7a3afb97a3c41447d50a8aeee2362a55518e45d1
 
-A timer that turns intentions into action - inspired by the [Routinery app](https://www.routinery.app/).
+A timer application that turns intentions into action, designed to work across multiple platforms with a clean, maintainable architecture.
 
-## Overview
+## 🏗️ Architecture
 
-This MVP captures the core functionality of Routinery, focusing on the two main loops:
+This project uses a **platform abstraction layer** to support multiple deployment targets while maintaining clean, shared business logic.
 
-1. **Task Creation Loop**: Add tasks and assign specific durations to each
-2. **Playback Loop**: A slideshow/timer mode where each task is displayed for its assigned duration
+### Directory Structure
 
-## Features
+```
+routinery-app/
+├── src/
+│   ├── core/                    # Platform-agnostic business logic
+│   │   ├── types.ts            # Shared TypeScript types
+│   │   ├── presets.ts          # Timer presets data
+│   │   └── timer.ts            # Core timer logic
+│   ├── platform/               # Platform-specific implementations
+│   │   ├── interface.ts        # Platform adapter interface
+│   │   ├── web/                # Web platform implementation
+│   │   └── electron/           # Electron platform implementation
+│   ├── config/                 # Configuration management
+│   │   ├── features.ts         # Feature flags per platform
+│   │   └── environment.ts      # Environment detection
+│   ├── hooks/                  # React hooks
+│   │   └── usePlatform.ts      # Platform functionality hook
+│   ├── components/             # React components
+│   └── utils/                  # Shared utilities
+├── platforms/                  # Platform-specific builds
+│   ├── web/                    # Web build artifacts
+│   └── electron/               # Electron app files
+└── shared/                     # Shared assets and configs
+```
 
-### Core Functionality
-- ✅ **Task Management**: Add, remove, and organize tasks with custom durations
-- ✅ **Preset Routines**: Quick-start with predefined routines (similar to BEND's approach)
-- ✅ **Timer Mode**: Slideshow-style timer that progresses through tasks automatically
-- ✅ **Progress Tracking**: Visual progress bars and task completion indicators
-- ✅ **Pause/Resume**: Control the timer flow
-- ✅ **Completion Summary**: Stats and motivational feedback
+## 🚀 Supported Platforms
 
-### Preset Routines (BEND-style)
-- **Morning Routine**: Start your day with energy and focus
-- **Quick Workout**: Full body workout in under 20 minutes
-- **Study Session**: Focused learning with breaks
-- **Evening Wind Down**: Relax and prepare for restful sleep
-- **Kitchen Cleanup**: Quick kitchen organization
+### 1. Web (Development)
+- **Features**: Notifications, Audio, Local Storage
+- **Build**: `npm run build:web`
+- **Dev**: `npm run dev:web`
 
-## How It Works
+### 2. Standalone HTML
+- **Features**: Same as web, but packaged as single HTML file
+- **Build**: `npm run build:standalone`
+- **File**: `platforms/web/standalone.html`
 
-### 1. Setup Mode
-- Choose from preset routines or create your own
-- Add tasks with custom names and durations
-- Review your routine before starting
+### 3. Electron (Desktop)
+- **Features**: System tray, Always on top, Draggable window, Native notifications
+- **Build**: `npm run build:electron` (future)
+- **Dev**: `npm run dev:electron` (future)
 
-### 2. Timer Mode
-- Each task is displayed as a "slide" for its assigned duration
-- Large, clear timer display with progress bar
-- Smooth transitions between tasks
-- Pause/resume functionality
+## 🛠️ Development Workflow
 
-### 3. Completion Mode
-- Summary of completed routine
-- Statistics and motivational feedback
-- Option to start a new routine
+### Feature Development
+1. **Core Logic**: Add business logic in `src/core/`
+2. **Platform Integration**: Implement platform-specific features in `src/platform/`
+3. **Feature Flags**: Configure feature availability in `src/config/features.ts`
+4. **Testing**: Test across all platforms before merging
 
-## Technology Stack
+### Platform-Specific Development
+- **Web**: Use `npm run dev:web`
+- **Electron**: Use `npm run dev:electron` (when implemented)
+- **Standalone**: Build with `npm run build:standalone`
 
-- **React 18** with TypeScript
-- **Vite** for fast development and building
-- **Lucide React** for beautiful icons
-- **CSS3** with modern design patterns
-- **Responsive design** for mobile and desktop
-
-## Getting Started
-
-### Prerequisites
-- Node.js (version 16 or higher)
-- npm or yarn
-
-### Installation
-
-1. Clone the repository:
+### Build Commands
 ```bash
-git clone <repository-url>
-cd routinery-app
+# Web development
+npm run dev:web
+
+# Web production build
+npm run build:web
+
+# Standalone HTML build
+npm run build:standalone
+
+# Electron development (future)
+npm run dev:electron
+
+# Electron production build (future)
+npm run build:electron
 ```
 
-2. Install dependencies:
-```bash
-npm install
+## 🔧 Platform Abstraction
+
+### Platform Adapter Interface
+All platforms implement the same interface:
+```typescript
+interface PlatformAdapter {
+  // Storage
+  saveData(key: string, data: any): Promise<void>;
+  loadData(key: string): Promise<any>;
+  
+  // Notifications
+  showNotification(title: string, message: string): void;
+  
+  // Audio
+  playSound(soundType: 'start' | 'end' | 'break'): void;
+  
+  // System integration
+  minimizeToTray(): void;
+  setSystemTimer(duration: number): void;
+  
+  // Window management (Electron)
+  setWindowPosition(x: number, y: number): void;
+  setWindowSize(width: number, height: number): void;
+  setAlwaysOnTop(alwaysOnTop: boolean): void;
+}
 ```
 
-3. Start the development server:
-```bash
-npm run dev
+### Feature Flags
+Control which features are available on each platform:
+```typescript
+const webFeatures = {
+  systemTray: false,
+  notifications: true,
+  audio: true,
+  offlineStorage: true,
+  alwaysOnTop: false,
+  draggable: false,
+};
 ```
 
-4. Open your browser and navigate to `http://localhost:3000`
+## 🎯 Usage
 
-### Build for Production
+### Using Platform Features in Components
+```typescript
+import { usePlatform } from './hooks/usePlatform';
 
-```bash
-npm run build
+function MyComponent() {
+  const { 
+    playSound, 
+    showNotification, 
+    saveData, 
+    isElectron 
+  } = usePlatform();
+
+  const handleTimerComplete = () => {
+    playSound('end');
+    showNotification('Timer Complete!', 'Great job!');
+  };
+
+  return (
+    <div>
+      {isElectron && <DraggableArea>Header</DraggableArea>}
+      <NonDraggableArea>Content</NonDraggableArea>
+    </div>
+  );
+}
 ```
 
-## Project Structure
+### Platform-Specific Styling
+```typescript
+import { PlatformWrapper } from './components/PlatformWrapper';
 
-```
-src/
-├── components/
-│   ├── SetupMode.tsx      # Task creation and preset selection
-│   ├── TimerMode.tsx      # Timer/slideshow interface
-│   └── CompletionMode.tsx # Results and summary
-├── data/
-│   └── presets.ts         # Predefined routine templates
-├── utils/
-│   └── timer.ts           # Time formatting and calculation utilities
-├── types.ts               # TypeScript type definitions
-├── App.tsx                # Main application component
-├── main.tsx               # Application entry point
-└── index.css              # Global styles
+<PlatformWrapper 
+  className="container"
+  style={{ 
+    // Platform-specific styles
+    ...(isElectron && { WebkitAppRegion: 'drag' })
+  }}
+>
+  {children}
+</PlatformWrapper>
 ```
 
-## Design Philosophy
+## 🔮 Future Enhancements
 
-This MVP follows the core principles of Routinery:
+### Electron App Features
+- [ ] Borderless, draggable window
+- [ ] System tray integration
+- [ ] Always-on-top functionality
+- [ ] Native notifications
+- [ ] Electron-store for data persistence
 
-1. **Simplicity**: Clean, distraction-free interface
-2. **Focus**: One task at a time with clear visual feedback
-3. **Progress**: Visual indicators of completion and time remaining
-4. **Motivation**: Encouraging feedback and completion celebrations
+### Mobile Support
+- [ ] React Native implementation
+- [ ] PWA capabilities
+- [ ] Mobile-specific UI adaptations
 
-## Key Differences from Original Routinery
+### Advanced Features
+- [ ] Cloud sync across platforms
+- [ ] Custom sound themes
+- [ ] Advanced statistics
+- [ ] Routine templates
 
-- **Web-based**: Runs in browser instead of mobile app
-- **Simplified**: Focuses on core timer functionality
-- **Preset-focused**: Emphasizes BEND-style preset selection
-- **MVP scope**: Core features only, no advanced features like:
-  - User accounts
-  - Routine history
-  - Advanced analytics
-  - Mobile notifications
-  - Social features
+## 📝 Development Guidelines
 
-## Future Enhancements
+### Adding New Features
+1. **Core First**: Implement in `src/core/` if platform-agnostic
+2. **Platform Specific**: Add to appropriate platform adapter
+3. **Feature Flag**: Update `src/config/features.ts`
+4. **Test All Platforms**: Ensure compatibility
 
-Potential features for future iterations:
-- Sound notifications
-- Custom themes
-- Routine templates sharing
-- Progress tracking over time
-- Integration with calendar apps
-- Mobile app version
+### Platform Parity
+- Keep features synchronized across platforms
+- Use feature flags to control availability
+- Maintain consistent user experience
+- Document platform-specific limitations
 
-## Contributing
+### Code Organization
+- **Shared Logic**: Keep in `src/core/`
+- **Platform Logic**: Isolate in `src/platform/`
+- **Configuration**: Centralize in `src/config/`
+- **Components**: Use platform wrappers for differences
 
-This is an MVP demonstration. For contributions or feature requests, please create an issue or pull request.
+## 🚀 Getting Started
 
-## License
+1. **Clone the repository**
+2. **Install dependencies**: `npm install`
+3. **Start development**: `npm run dev:web`
+4. **Build for production**: `npm run build:web`
+5. **Test standalone**: `npm run build:standalone`
 
-This project is for educational and demonstration purposes.
+## 📄 License
+
+MIT License - see LICENSE file for details.

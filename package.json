@@ -3,10 +3,19 @@
   "version": "1.0.0",
   "description": "MVP of Routinerou - A timer that turns intentions into action",
   "main": "index.js",
+  "homepage": "https://selloa.github.io/routinery-app",
   "scripts": {
     "dev": "vite",
+    "dev:web": "vite",
+    "dev:electron": "vite --mode electron",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build:web": "tsc && vite build",
+    "build:electron": "tsc && vite build --mode electron",
+    "build:standalone": "tsc && vite build --mode standalone",
+    "preview": "vite preview",
+    "preview:web": "vite preview",
+    "preview:electron": "vite preview --mode electron",
+    "deploy": "npm run build && gh-pages -d dist"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -17,6 +26,7 @@
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
+    "gh-pages": "^6.1.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   }

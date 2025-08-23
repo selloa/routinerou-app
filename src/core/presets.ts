@@ -1,4 +1,4 @@
-import { Preset } from '../types';
+import { Preset } from './types';
 
 export const presets: Preset[] = [
   {
