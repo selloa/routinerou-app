@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Task, AppMode, TimerState } from './types';
 import { presets } from './data/presets';
 import SetupMode from './components/SetupMode';
@@ -18,7 +18,7 @@ function App() {
 
   // Timer effect
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: number;
 
     if (timerState.isRunning && timerState.timeRemaining > 0) {
       interval = setInterval(() => {
