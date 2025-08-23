@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Task, AppMode, TimerState } from './types';
-import { presets } from './data/presets';
+import { Task, AppMode, TimerState } from './core/types';
+import { presets } from './core/presets';
 import SetupMode from './components/SetupMode';
 import TimerMode from './components/TimerMode';
 import CompletionMode from './components/CompletionMode';
