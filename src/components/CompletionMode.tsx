@@ -1,6 +1,6 @@
 import React from 'react';
-import { Task } from '../types';
-import { formatDuration } from '../utils/timer';
+import { Task } from '../core/types';
+import { formatDuration } from '../core/timer';
 import { RotateCcw, CheckCircle, Clock, Trophy } from 'lucide-react';
 
 interface CompletionModeProps {

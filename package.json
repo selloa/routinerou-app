@@ -5,8 +5,15 @@
   "main": "index.js",
   "scripts": {
     "dev": "vite",
+    "dev:web": "vite",
+    "dev:electron": "vite --mode electron",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build:web": "tsc && vite build",
+    "build:electron": "tsc && vite build --mode electron",
+    "build:standalone": "tsc && vite build --mode standalone",
+    "preview": "vite preview",
+    "preview:web": "vite preview",
+    "preview:electron": "vite preview --mode electron"
   },
   "dependencies": {
     "react": "^18.2.0",

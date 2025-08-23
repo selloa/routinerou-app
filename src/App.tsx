@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Task, AppMode, TimerState } from './types';
-import { presets } from './data/presets';
+import { useState, useEffect } from 'react';
+import { Task, AppMode, TimerState } from './core/types';
+import { presets } from './core/presets';
 import SetupMode from './components/SetupMode';
 import TimerMode from './components/TimerMode';
 import CompletionMode from './components/CompletionMode';
+import { PlatformWrapper, DraggableArea, NonDraggableArea } from './components/PlatformWrapper';
+import { usePlatform } from './hooks/usePlatform';
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -16,9 +18,35 @@ function App() {
     startTime: null,
   });
 
+  const { 
+    isReady, 
+    playSound, 
+    showNotification, 
+    saveData, 
+    loadData
+  } = usePlatform();
+
+  // Load saved data on mount
+  useEffect(() => {
+    if (isReady) {
+      loadData('tasks').then((savedTasks) => {
+        if (savedTasks) {
+          setTasks(savedTasks);
+        }
+      });
+    }
+  }, [isReady, loadData]);
+
+  // Save tasks when they change
+  useEffect(() => {
+    if (isReady && tasks.length > 0) {
+      saveData('tasks', tasks);
+    }
+  }, [tasks, isReady, saveData]);
+
   // Timer effect
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: number;
 
     if (timerState.isRunning && timerState.timeRemaining > 0) {
       interval = setInterval(() => {
@@ -31,6 +59,8 @@ function App() {
             
             if (nextTaskIndex < tasks.length) {
               const nextTask = tasks[nextTaskIndex];
+              // Play sound for task completion
+              playSound('break');
               return {
                 ...prev,
                 currentTaskIndex: nextTaskIndex,
@@ -39,6 +69,8 @@ function App() {
               };
             } else {
               // All tasks completed
+              playSound('end');
+              showNotification('Routine Complete!', 'Great job completing your routine!');
               return {
                 ...prev,
                 isRunning: false,
@@ -63,7 +95,7 @@ function App() {
         clearInterval(interval);
       }
     };
-  }, [timerState.isRunning, timerState.timeRemaining, tasks]);
+  }, [timerState.isRunning, timerState.timeRemaining, tasks, playSound, showNotification]);
 
   const addTask = (name: string, duration: number) => {
     const newTask: Task = {
@@ -80,7 +112,7 @@ function App() {
   };
 
   const loadPreset = (preset: typeof presets[0]) => {
-    const presetTasks: Task[] = preset.tasks.map(task => ({
+    const presetTasks: Task[] = preset.tasks.map((task: any) => ({
       ...task,
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
       completed: false,
@@ -92,6 +124,7 @@ function App() {
     if (tasks.length === 0) return;
     
     const firstTask = tasks[0];
+    playSound('start');
     setTimerState({
       isRunning: true,
       currentTaskIndex: 0,
@@ -143,13 +176,13 @@ function App() {
   };
 
   return (
-    <div className="container">
-      <div className="header">
+    <PlatformWrapper className="container">
+      <DraggableArea className="header">
         <h1>Routinery</h1>
         <p>Turn intentions into action</p>
-      </div>
+      </DraggableArea>
       
-      <div className="content">
+      <NonDraggableArea className="content">
         {mode === 'setup' && (
           <SetupMode
             tasks={tasks}
@@ -181,8 +214,8 @@ function App() {
             onReset={resetTimer}
           />
         )}
-      </div>
-    </div>
+      </NonDraggableArea>
+    </PlatformWrapper>
   );
 }
 
