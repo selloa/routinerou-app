@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Task, AppMode, TimerState } from './core/types';
 import { presets } from './core/presets';
+import { soundManager } from './core/sound';
 import SetupMode from './components/SetupMode';
 import TimerMode from './components/TimerMode';
 import CompletionMode from './components/CompletionMode';
@@ -31,6 +32,8 @@ function App() {
             
             if (nextTaskIndex < tasks.length) {
               const nextTask = tasks[nextTaskIndex];
+              // Play beep for new task start
+              soundManager.playTaskStartBeep();
               return {
                 ...prev,
                 currentTaskIndex: nextTaskIndex,
@@ -38,7 +41,8 @@ function App() {
                 totalTime: nextTask.duration,
               };
             } else {
-              // All tasks completed
+              // All tasks completed - play completion beep
+              soundManager.playRoutineCompleteBeep();
               return {
                 ...prev,
                 isRunning: false,
@@ -90,6 +94,9 @@ function App() {
 
   const startTimer = () => {
     if (tasks.length === 0) return;
+    
+    // Play beep for routine start
+    soundManager.playRoutineStartBeep();
     
     const firstTask = tasks[0];
     setTimerState({
