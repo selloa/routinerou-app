@@ -68,8 +68,64 @@ const SetupMode: React.FC<SetupModeProps> = ({
         })}
       </div>
 
+      {/* Start Routine Button */}
+      {tasks.length > 0 && (
+        <div style={{ marginTop: '24px', marginBottom: '24px' }}>
+          <button
+            className="btn btn-large"
+            onClick={onStartTimer}
+            disabled={tasks.length === 0}
+          >
+            <Play size={20} style={{ marginRight: '8px' }} />
+            Start Routine
+          </button>
+        </div>
+      )}
+
+      {/* Task List */}
+      <div className="task-list">
+        {tasks.length === 0 ? (
+          <div className="empty-state">
+            <h3>No tasks yet</h3>
+            <p>Add some tasks to get started, or choose a preset above</p>
+          </div>
+        ) : (
+          <>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '600' }}>
+                Your Routine ({tasks.length} tasks)
+              </h3>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#667eea', fontWeight: '600' }}>
+                <Clock size={16} />
+                {formatDuration(getTotalDuration())}
+              </div>
+            </div>
+            
+            {tasks.map((task, index) => (
+              <div key={task.id} className="task-item">
+                <div className="task-header">
+                  <div>
+                    <div className="task-name">{task.name}</div>
+                    <small style={{ color: '#666' }}>Task {index + 1}</small>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <span className="task-duration">{formatDuration(task.duration)}</span>
+                    <button
+                      className="btn-small btn-danger"
+                      onClick={() => onRemoveTask(task.id)}
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+
       {/* Task Form */}
-      <div className="task-form">
+      <div className="task-form" style={{ marginTop: '32px' }}>
         <h3 style={{ marginBottom: '16px', fontSize: '18px', fontWeight: '600' }}>
           Or Create Your Own Routine
         </h3>
@@ -116,58 +172,6 @@ const SetupMode: React.FC<SetupModeProps> = ({
             Add Task
           </button>
         </form>
-      </div>
-
-      {/* Task List */}
-      <div className="task-list">
-        {tasks.length === 0 ? (
-          <div className="empty-state">
-            <h3>No tasks yet</h3>
-            <p>Add some tasks to get started, or choose a preset above</p>
-          </div>
-        ) : (
-          <>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: '600' }}>
-                Your Routine ({tasks.length} tasks)
-              </h3>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#667eea', fontWeight: '600' }}>
-                <Clock size={16} />
-                {formatDuration(getTotalDuration())}
-              </div>
-            </div>
-            
-            {tasks.map((task, index) => (
-              <div key={task.id} className="task-item">
-                <div className="task-header">
-                  <div>
-                    <div className="task-name">{task.name}</div>
-                    <small style={{ color: '#666' }}>Task {index + 1}</small>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <span className="task-duration">{formatDuration(task.duration)}</span>
-                    <button
-                      className="btn-small btn-danger"
-                      onClick={() => onRemoveTask(task.id)}
-                    >
-                      <Trash2 size={12} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-            
-            <button
-              className="btn btn-large"
-              onClick={onStartTimer}
-              disabled={tasks.length === 0}
-              style={{ marginTop: '24px' }}
-            >
-              <Play size={20} style={{ marginRight: '8px' }} />
-              Start Routine
-            </button>
-          </>
-        )}
       </div>
     </div>
   );
