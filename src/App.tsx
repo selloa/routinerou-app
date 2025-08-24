@@ -83,6 +83,15 @@ function App() {
     setTasks(prev => prev.filter(task => task.id !== taskId));
   };
 
+  const reorderTasks = (fromIndex: number, toIndex: number) => {
+    setTasks(prev => {
+      const newTasks = [...prev];
+      const [movedTask] = newTasks.splice(fromIndex, 1);
+      newTasks.splice(toIndex, 0, movedTask);
+      return newTasks;
+    });
+  };
+
   const loadPreset = (preset: typeof presets[0]) => {
     const presetTasks: Task[] = preset.tasks.map(task => ({
       ...task,
@@ -163,6 +172,7 @@ function App() {
             presets={presets}
             onAddTask={addTask}
             onRemoveTask={removeTask}
+            onReorderTasks={reorderTasks}
             onLoadPreset={loadPreset}
             onStartTimer={startTimer}
           />

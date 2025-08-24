@@ -8,6 +8,7 @@ interface SetupModeProps {
   presets: Preset[];
   onAddTask: (name: string, duration: number) => void;
   onRemoveTask: (taskId: string) => void;
+  onReorderTasks: (fromIndex: number, toIndex: number) => void;
   onLoadPreset: (preset: Preset) => void;
   onStartTimer: () => void;
 }
@@ -17,12 +18,48 @@ const SetupMode: React.FC<SetupModeProps> = ({
   presets,
   onAddTask,
   onRemoveTask,
+  onReorderTasks,
   onLoadPreset,
   onStartTimer,
 }) => {
   const [taskName, setTaskName] = useState('');
   const [minutes, setMinutes] = useState('');
   const [seconds, setSeconds] = useState('');
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', index.toString());
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverIndex(index);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverIndex(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    const dragIndex = parseInt(e.dataTransfer.getData('text/html'));
+    
+    if (dragIndex !== dropIndex) {
+      onReorderTasks(dragIndex, dropIndex);
+    }
+    
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,11 +139,37 @@ const SetupMode: React.FC<SetupModeProps> = ({
             </div>
             
             {tasks.map((task, index) => (
-              <div key={task.id} className="task-item">
+              <div 
+                key={task.id} 
+                className={`task-item ${draggedIndex === index ? 'dragging' : ''} ${dragOverIndex === index ? 'drag-over' : ''}`}
+                draggable
+                onDragStart={(e) => handleDragStart(e, index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, index)}
+                onDragEnd={handleDragEnd}
+                style={{
+                  cursor: 'grab',
+                  opacity: draggedIndex === index ? 0.5 : 1,
+                  transform: draggedIndex === index ? 'rotate(2deg)' : 'none',
+                  transition: 'all 0.2s ease',
+                  border: dragOverIndex === index ? '2px dashed #667eea' : 'none',
+                  backgroundColor: dragOverIndex === index ? '#f0f4ff' : 'transparent'
+                }}
+              >
                 <div className="task-header">
-                  <div>
-                    <div className="task-name">{task.name}</div>
-                    <small style={{ color: '#666' }}>Task {index + 1}</small>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ 
+                      cursor: 'grab', 
+                      color: '#999', 
+                      fontSize: '14px',
+                      userSelect: 'none'
+                    }}>
+                      ⋮⋮
+                    </div>
+                    <div>
+                      <div className="task-name">{task.name}</div>
+                    </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <span className="task-duration">{formatDuration(task.duration)}</span>
