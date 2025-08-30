@@ -7,6 +7,7 @@ import TimerMode from './components/TimerMode';
 import CompletionMode from './components/CompletionMode';
 
 function App() {
+  console.log('App component rendering...');
   const [tasks, setTasks] = useState<Task[]>([]);
   const [mode, setMode] = useState<AppMode>('setup');
   const [timerState, setTimerState] = useState<TimerState>({
@@ -163,6 +164,7 @@ function App() {
       <div className="header">
         <h1>Routinerou</h1>
         <p>Turn intentions into action</p>
+        <p style={{fontSize: '12px', marginTop: '8px'}}>App loaded successfully!</p>
       </div>
       
       <div className="content">
