@@ -7,7 +7,6 @@ import TimerMode from './components/TimerMode';
 import CompletionMode from './components/CompletionMode';
 
 function App() {
-  console.log('App component rendering...');
   const [tasks, setTasks] = useState<Task[]>([]);
   const [mode, setMode] = useState<AppMode>('setup');
   const [timerState, setTimerState] = useState<TimerState>({
