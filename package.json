@@ -8,7 +8,7 @@
     "dev": "vite",
     "dev:web": "vite",
     "dev:electron": "vite --mode electron",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "build:web": "tsc && vite build",
     "build:electron": "tsc && vite build --mode electron",
     "build:standalone": "tsc && vite build --mode standalone",
